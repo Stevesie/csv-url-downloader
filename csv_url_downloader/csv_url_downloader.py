@@ -72,10 +72,13 @@ def execute(
                 destination_file_path = os.path.join(desintation_dir, file_name)
 
                 print('Downloading {} -> {}'.format(download_url, destination_file_path))
+                r = requests.get(download_url, verify=do_ssl_verification)
 
-                with open(destination_file_path, 'wb') as f:
-                    r = requests.get(download_url, verify=do_ssl_verification)
-                    f.write(r.content)
+                if r.content:
+                    with open(destination_file_path, 'wb') as f:
+                        f.write(r.content)
+                else:
+                    print('Warning: {} contained no content and was not written.'.format(download_url))
 
                 sleep(0.5) # be nice - don't hammer remote service
 
